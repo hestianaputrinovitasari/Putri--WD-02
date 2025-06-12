@@ -6,20 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class DetailPeriksa extends Model
 {
-    protected $table = 'detail_periksas';
+    use HasFactory;
+
     protected $fillable = [
         'id_periksa',
         'id_obat',
-        'jumlah',
-        'biaya',
     ];
 
-    public function periksa()
+    public function periksa():BelongsTo
     {
         return $this->belongsTo(Periksa::class, 'id_periksa');
     }
 
-    public function obat()
+    public function obat():BelongsTo
     {
         return $this->belongsTo(Obat::class, 'id_obat');
     }

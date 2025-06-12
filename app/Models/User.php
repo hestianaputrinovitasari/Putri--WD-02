@@ -30,12 +30,10 @@ class User extends Authenticatable
         'password',
     ];
 
-    public function jadwalPeriksa()
-    {
+    public function jadwalPeriksas(){
         return $this->hasMany(JadwalPeriksa::class, 'id_dokter');
     }
-    public function janjiPerika()
-    {
+    public function janjiPeriksas(){
         return $this->hasMany(JanjiPeriksa::class, 'id_pasien');
     }
 
