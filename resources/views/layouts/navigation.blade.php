@@ -31,6 +31,11 @@
                         <x-nav-link :href="route('dokter.jadwal.index')" :active="request()->routeIs('dokter.jadwal.index')">
                             {{ __('Jadwal') }}
                         </x-nav-link>
+                        
+                        {{-- Tambahkan Link untuk menu "Memeriksa" --}}
+                        <x-nav-link :href="route('dokter.memeriksa.index')" :active="request()->routeIs('dokter.memeriksa.index')">
+                            {{ __('Memeriksa') }}
+                        </x-nav-link>
 
                         @elseif(Auth::user()->role == 'pasien')
                         <x-nav-link :href="route('pasien.dashboard')" :active="request()->routeIs('pasien.dashboard')">

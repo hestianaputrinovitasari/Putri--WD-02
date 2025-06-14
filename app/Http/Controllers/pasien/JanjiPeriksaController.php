@@ -30,34 +30,28 @@ class JanjiPeriksaController extends Controller
         ]);
     }
     public function store(Request $request)
-{
-    $request->validate([
-        'id_dokter' => 'required|exists:users,id',
-        'keluhan' => 'required',
-    ]);
+    {
+        $request->validate([
+            'id_dokter' => 'required|exists:users,id',
+            'keluhan' => 'required',
+        ]);
 
-    $jadwalPeriksa = JadwalPeriksa::where('id_dokter', $request->id_dokter)
-        ->where('status', true)
-        ->first();
+        $jadwalPeriksa = JadwalPeriksa::where('id_dokter', $request->id_dokter)
+            ->where('status', true)
+            ->first();
 
-    // ⬅️ Tambahan validasi
-    if (!$jadwalPeriksa) {
-        return back()->withErrors(['Jadwal tidak tersedia untuk dokter yang dipilih.']);
+        $jumlahJanji = JanjiPeriksa::where('id_jadwal', $jadwalPeriksa->id)->count();
+        $noAntrian = $jumlahJanji + 1;
+
+        JanjiPeriksa::create([
+            'id_pasien' => Auth::user()->id,
+            'id_jadwal' => $jadwalPeriksa->id,
+            'keluhan' => $request->keluhan,
+            'no_antrian' => $noAntrian,
+        ]);
+
+        return Redirect::route('pasien.janji-periksa.index')->with('status', 'janji-periksa-created');
     }
-
-    $jumlahJanji = JanjiPeriksa::where('id_jadwal', $jadwalPeriksa->id)->count();
-    $noAntrian = $jumlahJanji + 1;
-
-    JanjiPeriksa::create([
-        'id_pasien' => Auth::user()->id,
-        'id_jadwal' => $jadwalPeriksa->id,
-        'keluhan' => $request->keluhan,
-        'no_antrian' => $noAntrian,
-    ]);
-
-    return Redirect::route('pasien.janji-periksa.index')->with('status', 'janji-periksa-created');
-}
-
     
 }
 

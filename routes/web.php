@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\pasien\JanjiPeriksaController;
 use App\Http\Controllers\pasien\RiwayatPeriksaController;
+use App\Http\Controllers\dokter\MemeriksaController;
 
 
 Route::get('/', function () {
@@ -60,9 +61,16 @@ Route::middleware(['auth', 'role:dokter'])->prefix('dokter')->group(function () 
         Route::post('/{id}/status', [JadwalPeriksaController::class, 'toggleStatus'])->name('dokter.jadwal.status');
         Route::delete('/{id}', [JadwalPeriksaController::class, 'destroy'])->name('dokter.jadwal.destroy');
     });
+
+    // Routes for 'memeriksa' (Memeriksa Pasien)
+    Route::prefix('memeriksa')->group(function () {
+        Route::get('/', [MemeriksaController::class, 'index'])->name('dokter.memeriksa.index');
+        Route::get('/{id}/edit', [MemeriksaController::class, 'edit'])->name('dokter.memeriksa.edit');
+        Route::get('/{id}', [MemeriksaController::class, 'show'])->name('dokter.memeriksa.show');
+        Route::post('/{id}', [MemeriksaController::class, 'store'])->name('dokter.memeriksa.store');
+        Route::patch('/{id}', [MemeriksaController::class, 'update'])->name('dokter.memeriksa.update');
+    });
 });
-
-
 
 Route::middleware(['auth', 'role:pasien'])->prefix('pasien')->group(function () {
     Route::get('/dashboard', function () {

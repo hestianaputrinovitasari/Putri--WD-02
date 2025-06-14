@@ -107,4 +107,30 @@ class JadwalPeriksaController extends Controller
 
         return back()->with('success', 'Jadwal berhasil dihapus.');
     }
+
+    public function memeriksaPasien()
+    {
+        $pasien = User::where('role', 'pasien')
+                    ->whereNull('no_rm')  // Status pasien yang belum diperiksa
+                    ->get();
+
+        return view('dokter.memeriksa', compact('pasien'));
+    }
+
+
+    public function periksaPasien(Request $request, $id)
+    {
+        // Validasi dan proses pemeriksaan
+        $request->validate([
+            'catatan' => 'required|string|max:255',
+        ]);
+
+        // Simpan hasil pemeriksaan
+        $pasien = User::findOrFail($id);
+        $pasien->catatan = $request->catatan;  // Simpan catatan pemeriksaan
+        $pasien->save();
+
+        return view('dokter.memeriksa', compact('pasien'));
+
+    }
 }
