@@ -69,4 +69,47 @@ class ObatController extends Controller
 
         return redirect()->route('dokter.obat.index');
     }
+
+    // Tambahan: Menampilkan obat yang sudah dihapus (soft delete)
+    public function trash()
+    {
+        $obats = Obat::onlyTrashed()->get();
+
+        return view('dokter.obat.trash', compact('obats'));
+    }
+
+    // Mengembalikan obat yang dihapus
+public function restore($id)
+{
+    $obat = Obat::onlyTrashed()->findOrFail($id);
+    $obat->restore();
+
+    return redirect()->route('dokter.obat.trash')->with('status', 'obat-restored');
+}
+
+// Menghapus permanen obat dari database
+public function forceDelete($id)
+{
+    $obat = Obat::onlyTrashed()->findOrFail($id);
+    $obat->forceDelete();
+
+    return redirect()->route('dokter.obat.trash')->with('status', 'obat-deleted-permanent');
+}
+
+// Restore semua obat dari trash
+public function restoreAll()
+{
+    Obat::onlyTrashed()->restore();
+
+    return redirect()->route('dokter.obat.trash')->with('status', 'Semua obat berhasil direstore.');
+}
+
+// Hapus permanen semua obat dari trash
+public function forceDeleteAll()
+{
+    Obat::onlyTrashed()->forceDelete();
+
+    return redirect()->route('dokter.obat.trash')->with('status', 'Semua obat berhasil dihapus permanen.');
+}
+
 }

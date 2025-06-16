@@ -13,20 +13,23 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+    <form id="form-update-profile" method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
         @csrf
         @method('patch')
 
+        <!-- Nama -->
         <div>
             <x-input-label for="nama" :value="__('Name')" />
-            <x-text-input id="nama" name="nama" type="text" class="mt-1 block w-full" :value="old('nama', $user->nama)" required autofocus autocomplete="nama" />
+            <x-text-input id="nama" name="nama" type="text" class="mt-1 block w-full"
+                :value="old('nama', $user->nama)" required autofocus autocomplete="nama" />
             <x-input-error class="mt-2" :messages="$errors->get('nama')" />
         </div>
 
-
+        <!-- Email -->
         <div>
             <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
+            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full"
+                :value="old('email', $user->email)" required autocomplete="username" />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
@@ -34,7 +37,8 @@
                     <p class="text-sm mt-2 text-gray-800 dark:text-gray-200">
                         {{ __('Your email address is unverified.') }}
 
-                        <button form="send-verification" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
+                        <button form="send-verification"
+                            class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
                             {{ __('Click here to re-send the verification email.') }}
                         </button>
                     </p>
@@ -48,17 +52,33 @@
             @endif
         </div>
 
+        <!-- Dropdown Poli: hanya untuk dokter -->
+        @if (auth()->user()->role === 'dokter')
+            <div>
+                <x-input-label for="id_poli" :value="__('Pilih Poli')" />
+                <select id="id_poli" name="id_poli"
+                    class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                    <option value="">-- Pilih Poli --</option>
+                    @foreach ($polis as $item)
+                        <option value="{{ $item->id }}" {{ old('id_poli', $user->id_poli) == $item->id ? 'selected' : '' }}>
+                            {{ $item->nama }}
+                        </option>
+                    @endforeach
+                </select>
+                <x-input-error class="mt-2" :messages="$errors->get('id_poli')" />
+            </div>
+        @endif
+
+        <!-- Tombol Save dan Notifikasi -->
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 
             @if (session('status') === 'profile-updated')
-                <p
-                    x-data="{ show: true }"
-                    x-show="show"
-                    x-transition
+                <p x-data="{ show: true }" x-show="show" x-transition
                     x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600 dark:text-gray-400"
-                >{{ __('Saved.') }}</p>
+                    class="text-sm text-gray-600 dark:text-gray-400">
+                    {{ __('Saved.') }}
+                </p>
             @endif
         </div>
     </form>

@@ -2,18 +2,22 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use App\Models\Poli;
 
 class UserSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
- public function run()
+    public function run()
     {
+        // Ambil ID poli berdasarkan nama
+        $poliGigi = Poli::where('nama', 'Poli Gigi')->first()->id ?? null;
+        $poliAnak = Poli::where('nama', 'Poli Anak')->first()->id ?? null;
+        $poliPenyakitDalam = Poli::where('nama', 'Poli Penyakit Dalam')->first()->id ?? null;
+
         // Seeder Dokter
         User::create([
             'role' => 'dokter',
@@ -24,7 +28,7 @@ class UserSeeder extends Seeder
             'no_ktp' => '1234567890123456',
             'no_hp' => '081234567890',
             'no_rm' => null,
-            'poli' => 'Poli Umum'
+            'id_poli' => $poliGigi,
         ]);
 
         User::create([
@@ -36,7 +40,19 @@ class UserSeeder extends Seeder
             'no_ktp' => '2345678901234567',
             'no_hp' => '081298765432',
             'no_rm' => null,
-            'poli' => 'Poli Anak'
+            'id_poli' => $poliAnak,
+        ]);
+
+        User::create([
+            'role' => 'dokter',
+            'nama' => 'Dr. Hestiana, S.pd',
+            'email' => 'hestiana@gmail.com',
+            'password' => bcrypt('anakkedua02'),
+            'alamat' => 'Jl. Kesehatan No. 10',
+            'no_ktp' => '1234567890123456',
+            'no_hp' => '081234567890',
+            'no_rm' => null,
+            'id_poli' => $poliPenyakitDalam,
         ]);
 
         // Seeder Pasien
@@ -49,7 +65,7 @@ class UserSeeder extends Seeder
             'no_ktp' => '3456789012345678',
             'no_hp' => '082134567890',
             'no_rm' => 'RM001',
-            'poli' => null
+            'id_poli' => null,
         ]);
 
         User::create([
@@ -61,7 +77,7 @@ class UserSeeder extends Seeder
             'no_ktp' => '4567890123456789',
             'no_hp' => '083245678901',
             'no_rm' => 'RM002',
-            'poli' => null
+            'id_poli' => null,
         ]);
     }
 }

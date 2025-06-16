@@ -48,6 +48,18 @@ Route::middleware(['auth', 'role:dokter'])->prefix('dokter')->group(function () 
 
         // Delete an obat
         Route::delete('/{id}', [ObatController::class, 'destroy'])->name('dokter.obat.destroy');
+
+        // Lihat obat yang terhapus (soft deleted)
+        Route::get('/trash', [ObatController::class, 'trash'])->name('dokter.obat.trash');
+
+        // Tambahan fitur trash dan restore
+        Route::post('/{id}/restore', [ObatController::class, 'restore'])->name('dokter.obat.restore');
+        Route::delete('/{id}/force-delete', [ObatController::class, 'forceDelete'])->name('dokter.obat.force-delete');
+
+        //Tambahan: Restore semua & delete semua permanen
+        Route::post('/restore-all', [ObatController::class, 'restoreAll'])->name('dokter.obat.restore-all');
+        Route::delete('/force-delete-all', [ObatController::class, 'forceDeleteAll'])->name('dokter.obat.force-delete-all');
+
     });
 
     // Routes for 'jadwal' (Schedule)

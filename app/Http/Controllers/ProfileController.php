@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Poli;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,8 +17,17 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        $user = $request->user();
+        $polis = [];
+
+        // Hanya kirim data poli jika role dokter
+        if ($user->role === 'dokter') {
+            $polis = Poli::all();
+        }
+
         return view('profile.edit', [
-            'user' => $request->user(),
+            'user' => $user,
+            'polis' => $polis,
         ]);
     }
 
@@ -26,24 +36,30 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        // Mengisi data user dengan data yang tervalidasi
-        $request->user()->fill([
-            'nama' => $request->validated()['nama'],  
-            'email' => $request->validated()['email'], 
+        $user = $request->user();
+
+        $validated = $request->validated();
+
+        // Update nama dan email
+        $user->fill([
+            'nama' => $validated['nama'],
+            'email' => $validated['email'],
         ]);
 
-        // Cek apakah ada perubahan pada email dan set null pada kolom email_verified_at
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        // Simpan id_poli jika role dokter
+        if ($user->role === 'dokter') {
+            $user->id_poli = $validated['id_poli'] ?? null;
         }
 
-        // Simpan perubahan
-        $request->user()->save();
+        // Reset verifikasi email jika email berubah
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
 
-        // Redirect kembali ke halaman profile edit dengan pesan status
+        $user->save();
+
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
-
 
     /**
      * Delete the user's account.

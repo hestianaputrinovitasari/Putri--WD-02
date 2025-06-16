@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class ProfileUpdateRequest extends FormRequest
 {
@@ -15,10 +13,15 @@ class ProfileUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'nama' => 'required|string|max:255', 
+        $rules = [
+            'nama' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . auth()->id(),
         ];
-    }
 
+        if (auth()->user()->role === 'dokter') {
+            $rules['id_poli'] = 'nullable|exists:poli,id'; // ✅ perbaikan di sini
+        }
+
+        return $rules;
+    }
 }

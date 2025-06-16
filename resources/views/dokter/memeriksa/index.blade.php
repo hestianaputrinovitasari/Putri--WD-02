@@ -37,7 +37,6 @@
                                             <a href="{{ route('dokter.memeriksa.edit', $janjiPeriksa->periksa->id) }}" class="btn btn-secondary btn-sm ms-2">Edit</a>
                                         @else
                                             <a href="{{ route('dokter.memeriksa.show', $janjiPeriksa->id) }}" class="btn btn-primary btn-sm">Periksa</a>
-                                            <a href="{{ route('dokter.memeriksa.edit', $janjiPeriksa->id) }}" class="btn btn-secondary btn-sm ms-2">Edit</a>
                                         @endif
                                     </td>                                    
                                 </tr>

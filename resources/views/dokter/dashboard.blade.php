@@ -11,6 +11,13 @@
                 <div class="p-6 text-gray-900">
                     {{ __("You're logged in! Welcome Dokter") }} {{ Auth::user()->nama }}
                 </div>
+                
+                @if (Auth::user()->poli)
+                    <div class="p-6 text-gray-900">
+                        {{ __('Poli:') }} {{ Auth::user()->poli->nama }}
+                    </div>
+                @endif
+
             </div>
         </div>
     </div>
